@@ -1,13 +1,17 @@
 package edu.temple.gps_app_1_23_20;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     LocationListener locationListener;
 
     TextView lat, lon;
+    Button requestPermBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         lat = findViewById(R.id.textView);
         lon = findViewById(R.id.textView2);
+        requestPermBtn = findViewById(R.id.requestPermBtn);
 
         locationManager = getSystemService(LocationManager.class);
 
@@ -50,6 +56,19 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        requestPermBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Permission check
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // As soon as user requests permission, we want information to be updated, have to use onRequestPermissionsResult() callback below
+                    registerLocation();
+                } else {
+                    // Request permission
+                    requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+                }
+            }
+        });
 
     }
 
@@ -68,14 +87,24 @@ public class MainActivity extends AppCompatActivity {
 //            // for Activity#requestPermissions for more details.
 //            return;
 //        }
+    }
 
-        // Permission check
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // GPS needs a Provider, specify thresholds (minTime = how much time should transpire before you can get another update)f
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    @SuppressLint("MissingPermission") // Lint to ignore warning since we know code will have checked permission
+    private void registerLocation() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    // Gets invoked when user allows or denies permission
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            registerLocation();
         } else {
-            // Request permission
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+            // Tell user why they need to turn on feature
+            // shouldShowRequestPermissionRationale()
         }
     }
 }
+
+
