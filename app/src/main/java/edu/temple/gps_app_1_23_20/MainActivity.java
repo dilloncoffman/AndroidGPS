@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView lat, lon;
     Button requestPermBtn;
+    Button secActBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,15 @@ public class MainActivity extends AppCompatActivity {
         lat = findViewById(R.id.textView);
         lon = findViewById(R.id.textView2);
         requestPermBtn = findViewById(R.id.requestPermBtn);
+
+        secActBtn = findViewById(R.id.launchSecActBtn);
+
+        secActBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SecondActivity.class));
+            }
+        });
 
         locationManager = getSystemService(LocationManager.class);
 

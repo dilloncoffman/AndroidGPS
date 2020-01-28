@@ -4,7 +4,7 @@
     <!--  -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <permission android:name="edu.temple.permission.SECOND_ACTIVITY_PERMISSION"
+    <permission android:name="edu.temple.permission.FIRST_ACTIVITY_PERMISSION"
             android:protectionLevel="dangerous" />
 
     <application
@@ -14,8 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SecondActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".SecondActivity"
+            />
+        <activity android:name=".MainActivity"
+            android:permission="edu.temple.permission.FIRST_ACTIVITY_PERMISSION"
+            >
+            <intent-filter>
+                <action android:name="edu.temple.LAUNCH_MY_FIRST_ACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
